@@ -11,19 +11,21 @@ Assertiv is a header-only unit test framework.  It is designed to be embedded wi
 * Summarizes count of total and failing test cases and assertions.
 
 ## Usage
-1. Add Assertiv to your project:
+* Add Assertiv to your project:
 
 From your project root directory, add the submodule, passing the path to where you want it to reside:
 
-> git submodule add git@github.com:iamtheschmitzer/assertiv.git test/unit/assertiv
+```bash
+git submodule add git@github.com:iamtheschmitzer/assertiv.git test/unit/assertiv
+```
 
-2. Include the header file in your test source:
+* Include the header file in your test source:
 
 ```c++
 #include "assertiv/assertiv.h"
 ```
 
-3. Define test cases with the TEST macro:
+* Define test cases with the TEST macro:
 
 ```c++
 TEST(TestAdditionOperator) {
@@ -31,7 +33,7 @@ TEST(TestAdditionOperator) {
 }
 ```
 
-4. Withing test case, use ASSERT_* macros:
+* Withing test case, use ASSERT_* macros:
 
 ```c++
 TEST(TestAdditionOperator) {
@@ -41,5 +43,5 @@ TEST(TestAdditionOperator) {
 }
 ```
 
-5. There are no more excuses.  Get testing.
+* There are no more excuses.  Get testing.
 
