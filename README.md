@@ -5,9 +5,37 @@ Minimal C++ header-only unit test framework from [OCI](http://ociweb.com)
 
 Assertiv is a header-only unit test framework.  It is designed to be embedded within your own open-source project, rather than having a separate project for your clients to download and build.
 
-Just include it in your project, set up the build environment, and test.
+## Usage
+1. Add Assertiv to your project:
 
-There are no more excuses.
+From your project root directory, add the submodule, passing the path to where you want it to reside:
+
+> git submodule add git@github.com:iamtheschmitzer/assertiv.git test/unit/assertiv
+
+2. Include the header file in your test source:
+
+```c++
+#include "assertiv/assertiv.h"
+```
+
+3. Define test cases with the TEST macro:
+
+```
+TEST(TestAdditionOperator) {
+  // Test code goes here
+}
+```
+
+4. Withing test case, use ASSERT_* macros:
+```
+TEST(TestAdditionOperator) {
+  // Test construction and addition of Num class
+  ASSERT_EQ(17, Num(8) + Num(9));
+  ASSERT_EQ(Num(17), Num(8) + Num(9));
+}
+```
+
+5. There are no more excuses.  Get testing.
 
 ## Features
 * Header-only - no library to build
