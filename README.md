@@ -20,14 +20,15 @@ From your project root directory, add the submodule, passing the path to where y
 
 3. Define test cases with the TEST macro:
 
-```
+```c++
 TEST(TestAdditionOperator) {
   // Test code goes here
 }
 ```
 
 4. Withing test case, use ASSERT_* macros:
-```
+
+```c++
 TEST(TestAdditionOperator) {
   // Test construction and addition of Num class
   ASSERT_EQ(17, Num(8) + Num(9));
