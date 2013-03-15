@@ -3,7 +3,10 @@ Assertiv
 
 Minimal C++ header-only unit test framework from [OCI](http://ociweb.com)
 
-Assertiv is a header-only unit test framework.  It is designed to be embedded within your own open-source project, rather than having a separate project for your clients to download and build.
+## Why Assertiv?
+Assertiv is header-only, designed to be embedded within your own project, rather than having a separate project for your clients to download and build.
+
+No downloads, no build issues, no worrying about runtime libraries, no bjam.
 
 ## Features
 * Header-only - no library to build
