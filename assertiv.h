@@ -35,8 +35,12 @@ namespace {
       for (Tests::iterator test = tests_.begin(); test != tests_.end(); ++test) {
         std::cout << "Testing " << test->test_case_ << std::endl;
         ++test_case_count_;
+        unsigned int old_assertion_fail_count = assertion_fail_count_;
         test->test_func_();
-        
+        // If the assertion fail count increased, the test failed
+        if (assertion_fail_count_ > old_assertion_fail_count) {
+          ++test_case_fail_count_;
+        }
       }
 
       std::cout << std::setw(10) << test_case_count_ << " Test cases: "
