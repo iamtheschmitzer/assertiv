@@ -51,6 +51,7 @@ namespace {
                 << assertion_fail_count_ << " failed" << std::endl;
       if (assertion_fail_count_) {
         std::cerr << "Test FAILED" << std::endl;
+        exit(-1 * assertion_fail_count_);
       } else {
         std::cout << "Test PASSED" << std::endl;
       }
