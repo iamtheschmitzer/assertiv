@@ -14,7 +14,7 @@
 #include <iostream>
 #include <iomanip>
 
-namespace {
+namespace assertiv{
   class TestRunner;
 
   struct TestInstance {
@@ -31,7 +31,9 @@ namespace {
     {
     }
 
-    ~TestRunner() {
+    ~TestRunner() {}
+    int run() {
+      int result = 0;
       for (Tests::iterator test = tests_.begin(); test != tests_.end(); ++test) {
         std::cout << "Testing " << test->test_case_ << std::endl;
         ++test_case_count_;
@@ -50,11 +52,12 @@ namespace {
                 << assertion_count_ - assertion_fail_count_ << " passed, "
                 << assertion_fail_count_ << " failed" << std::endl;
       if (assertion_fail_count_) {
-        std::cerr << "Test FAILED" << std::endl;
-        exit(-1 * assertion_fail_count_);
+        std::cerr << "Test FAILED: " << assertion_fail_count_ << " errors detected." << std::endl;
+        result = (-1 * assertion_fail_count_);
       } else {
         std::cout << "Test PASSED" << std::endl;
       }
+      return result;
     }
 
     void add(const char* test_case,
@@ -80,60 +83,66 @@ namespace {
     unsigned int test_case_fail_count_;
     unsigned int assertion_count_;
     unsigned int assertion_fail_count_;
+  public:
+    static TestRunner runner_;
   };
+
+  class Registrar {
+    public:
+      Registrar(const char* test_case, void (*pfunc)()) {
+        TestRunner::runner_.add(test_case, pfunc);
+      }
+    };
 } 
-
-TestRunner runner_;
-
-class Registrar {
-public:
-  Registrar(const char* test_case, void (*pfunc)()) {
-    runner_.add(test_case, pfunc);
-  }
-};
 
 #define TEST(test_case) \
 void test_##test_case(); \
-Registrar reg_##test_case(#test_case, test_##test_case); \
+assertiv::Registrar reg_##test_case(#test_case, test_##test_case); \
 \
 void test_##test_case() 
 
 #define ASSERT_EQ(left, right) if ((left) != (right)) {\
-  runner_.assert_fail(); \
+  assertiv::TestRunner::runner_.assert_fail(); \
   std::cerr << __FILE__ << ":" << __LINE__ \
     << " ASSERT_EQ    Failure: comparing " << (left) << " with " << (right) \
     << std::endl;\
 } else { \
-  runner_.assert_pass(); \
+  assertiv::TestRunner::runner_.assert_pass(); \
 }
 
 #define ASSERT_TRUE(val) if (!(val)) {\
-  runner_.assert_fail(); \
+  assertiv::TestRunner::runner_.assert_fail(); \
   std::cerr << __FILE__ << ":" << __LINE__ \
     << " ASSERT_TRUE  Failure: checking " << (val) << std::endl;\
 } else { \
-  runner_.assert_pass(); \
+  assertiv::TestRunner::runner_.assert_pass(); \
 }
 
 #define ASSERT_FALSE(val) if (val) {\
-  runner_.assert_fail(); \
+  assertiv::TestRunner::runner_.assert_fail(); \
   std::cerr << __FILE__ << ":" << __LINE__ \
     << " ASSERT_FALSE Failure: checking " << (val) << std::endl;\
 } else { \
-  runner_.assert_pass(); \
+  assertiv::TestRunner::runner_.assert_pass(); \
 }
-#define ASSERT_NO_THROW(code) try {\
+#define ASSERT_NO_THROW(code) do { try {\
   code \
-  runner_.assert_pass(); \
+  assertiv::TestRunner::runner_.assert_pass(); \
+} catch (const std::exception & e) { \
+  assertiv::TestRunner::runner_.assert_fail(); \
+  std::cerr << __FILE__ << ":" << __LINE__ \
+    << " ASSERT_NO_THROW Failure: " << e.what() << std::endl;\
 } catch (...) { \
-  runner_.assert_fail(); \
+  assertiv::TestRunner::runner_.assert_fail(); \
   std::cerr << __FILE__ << ":" << __LINE__ \
     << " ASSERT_NO_THROW Failure:" << std::endl;\
-}
+} \
+} while(false)
 
 #ifndef ASSERTIV_NO_MAIN
+assertiv::TestRunner assertiv::TestRunner::runner_;
 int main(int , const char* []) {
-  return 0;
+  return assertiv::TestRunner::runner_.run();
 }
 #endif
 
