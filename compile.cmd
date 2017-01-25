@@ -6,5 +6,5 @@
 @REM
 @REM run in the MSVC: "Developer Command Prompt" window
 @REM to ensure that cl and link are on the command path.  
-cl test_example.cpp /EHsc
-link test_example.obj
+cl test_example*.cpp /EHsc
+link test_example*.obj
