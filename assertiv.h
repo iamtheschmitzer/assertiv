@@ -31,7 +31,9 @@ namespace {
     {
     }
 
-    ~TestRunner() {
+    ~TestRunner() {}
+    int run() {
+      int result = 0;
       for (Tests::iterator test = tests_.begin(); test != tests_.end(); ++test) {
         std::cout << "Testing " << test->test_case_ << std::endl;
         ++test_case_count_;
@@ -50,11 +52,12 @@ namespace {
                 << assertion_count_ - assertion_fail_count_ << " passed, "
                 << assertion_fail_count_ << " failed" << std::endl;
       if (assertion_fail_count_) {
-        std::cerr << "Test FAILED" << std::endl;
-        exit(-1 * assertion_fail_count_);
+        std::cerr << "Test FAILED: " << assertion_fail_count_ << " errors detected." << std::endl;
+        result = (-1 * assertion_fail_count_);
       } else {
         std::cout << "Test PASSED" << std::endl;
       }
+      return result;
     }
 
     void add(const char* test_case,
@@ -122,18 +125,18 @@ void test_##test_case()
 } else { \
   runner_.assert_pass(); \
 }
-#define ASSERT_NO_THROW(code) try {\
+#define ASSERT_NO_THROW(code) do try {\
   code \
   runner_.assert_pass(); \
 } catch (...) { \
   runner_.assert_fail(); \
   std::cerr << __FILE__ << ":" << __LINE__ \
     << " ASSERT_NO_THROW Failure:" << std::endl;\
-}
+} while(false)
 
 #ifndef ASSERTIV_NO_MAIN
 int main(int , const char* []) {
-  return 0;
+  return runner_.run();
 }
 #endif
 
